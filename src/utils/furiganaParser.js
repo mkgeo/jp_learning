@@ -24,8 +24,19 @@ let kuroshiroInstance = null;
 let kuroshiroInitPromise = null;
 let isKuroshiroReady = false;
 
+export function getDictPath() {
+  if (typeof window !== 'undefined') {
+    let path = window.location.pathname;
+    if (!path.endsWith('/')) {
+      path = path.substring(0, path.lastIndexOf('/') + 1);
+    }
+    return `${path}dict`.replace(/\/+/g, '/');
+  }
+  return './dict';
+}
+
 /**
- * Initialize Kuroshiro with local Kuromoji dictionary files in /dict
+ * Initialize Kuroshiro with local Kuromoji dictionary files
  */
 export function initKuroshiro() {
   if (isKuroshiroReady && kuroshiroInstance) {
@@ -36,9 +47,13 @@ export function initKuroshiro() {
     return kuroshiroInitPromise;
   }
 
+  const targetDictPath = getDictPath();
+  console.log('Initializing Kuromoji dict at:', targetDictPath);
+
   kuroshiroInstance = new Kuroshiro();
-  kuroshiroInitPromise = kuroshiroInstance
-    .init(new KuromojiAnalyzer({ dictPath: '/dict' }))
+
+  const initPromise = kuroshiroInstance
+    .init(new KuromojiAnalyzer({ dictPath: targetDictPath }))
     .then(() => {
       isKuroshiroReady = true;
       console.log('Kuromoji morphological analyzer ready!');
@@ -50,6 +65,17 @@ export function initKuroshiro() {
       return null;
     });
 
+  // 4-Second Timeout Safeguard to prevent UI freezing
+  const timeoutPromise = new Promise(resolve => {
+    setTimeout(() => {
+      if (!isKuroshiroReady) {
+        console.warn('Kuromoji dictionary load timed out, falling back to sync parser.');
+        resolve(null);
+      }
+    }, 4000);
+  });
+
+  kuroshiroInitPromise = Promise.race([initPromise, timeoutPromise]);
   return kuroshiroInitPromise;
 }
 
