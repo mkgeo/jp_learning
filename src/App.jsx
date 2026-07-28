@@ -4,6 +4,7 @@ import Navigation from './components/Navigation';
 import Part1_TextInput from './components/Part1_TextInput';
 import Part2_Reader from './components/Part2_Reader';
 import Part2_StorageList from './components/Part2_StorageList';
+import Part3_VocabularyTable from './components/Part3_VocabularyTable';
 import { 
   getStoredItems, 
   saveStoredItems, 
@@ -11,6 +12,7 @@ import {
   updateStoredItem, 
   deleteStoredItem 
 } from './utils/storage';
+import { parseJapaneseParagraphsSync } from './utils/furiganaParser';
 
 export default function App() {
   const [theme, setTheme] = useState('dark');
@@ -46,6 +48,22 @@ export default function App() {
   // Open item in Reader mode
   const handleSelectReaderItem = (item) => {
     setActiveItem(item);
+    setActiveTab('reader');
+  };
+
+  // Handle direct text open from Vocabulary Table into Reader
+  const handleOpenVocabInReader = (text, title) => {
+    const paragraphs = parseJapaneseParagraphsSync(text);
+    const vocabItem = {
+      id: `vocab-${Date.now()}`,
+      title: title || text,
+      japaneseText: text,
+      paragraphs: paragraphs,
+      englishTranslation: 'N5 Core Vocabulary Example',
+      category: 'N5 Vocabulary',
+      tags: ['N5', 'Vocabulary']
+    };
+    setActiveItem(vocabItem);
     setActiveTab('reader');
   };
 
@@ -112,6 +130,12 @@ export default function App() {
           <Part2_Reader 
             activeItem={activeItem}
             onToggleFavorite={handleToggleFavorite}
+          />
+        )}
+
+        {activeTab === 'vocab' && (
+          <Part3_VocabularyTable 
+            onOpenReaderWithText={handleOpenVocabInReader}
           />
         )}
 
