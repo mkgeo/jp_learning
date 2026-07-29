@@ -43,10 +43,10 @@ export default function Part3_VocabularyTable({ onOpenReaderWithText }) {
           <div>
             <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '1.4rem', color: 'var(--text-main)', marginBottom: '0.3rem' }}>
               <BookOpen size={24} color="var(--accent-pink)" />
-              <span>JLPT N5 200 核心高頻單字大全</span>
+              <span>JLPT N5 800 核心單字終極寶典</span>
             </h2>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>
-              涵蓋 N5 檢定與基礎會話最常出現的 220+ 核心必背單字 (內建語音發音與單字測驗模式)
+              全面覆蓋 JLPT N5 檢定所需全量 662 核心單字 ｜ 15 大主題模組無死角複習 (內建語音朗讀與測驗)
             </p>
           </div>
 
@@ -56,7 +56,7 @@ export default function Part3_VocabularyTable({ onOpenReaderWithText }) {
             onClick={() => setShowTips(!showTips)}
           >
             <Lightbulb size={16} />
-            <span>{showTips ? '隱藏高效複習策略' : '顯示高效複習策略'}</span>
+            <span>{showTips ? '隱藏 30 天通關計畫' : '顯示 30 天通關計畫'}</span>
           </button>
         </div>
 
@@ -68,13 +68,13 @@ export default function Part3_VocabularyTable({ onOpenReaderWithText }) {
           marginBottom: showTips ? '1.25rem' : '0'
         }}>
           <div style={{ background: 'rgba(236, 72, 153, 0.1)', border: '1px solid rgba(236, 72, 153, 0.25)', padding: '0.9rem', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--accent-pink)' }}>220 個</div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>總收錄核心單字</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--accent-pink)' }}>662 個</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>收錄總單字數</div>
           </div>
 
           <div style={{ background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.25)', padding: '0.9rem', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--accent-blue)' }}>8 大</div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>主題分類</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--accent-blue)' }}>15 大</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>主題模組分類</div>
           </div>
 
           <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.25)', padding: '0.9rem', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
@@ -94,12 +94,12 @@ export default function Part3_VocabularyTable({ onOpenReaderWithText }) {
           }}>
             <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--accent-emerald)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
               <Lightbulb size={18} />
-              <span>💡 200 單字高效複習策略：</span>
+              <span>💡 N5 800 單字 30 天通關計畫：</span>
             </h4>
             <ul style={{ margin: 0, paddingLeft: '1.25rem', color: 'var(--text-main)', lineHeight: '1.6' }}>
-              <li><strong>每日目標：</strong> 建議每天學習 1 個大主題（約 20~30 個單字），7~8 天即可完整輪空一遍。</li>
-              <li><strong>遮蓋測試：</strong> 點選下方「遮蓋假名」或「遮蓋中文」開關，自我測試記憶熟悉度。</li>
-              <li><strong>動詞搭配：</strong> 背動詞時連同助詞（へ、を、に、で）一同記憶，日語會話更順暢。</li>
+              <li><strong>每日配額：</strong> 建議每天學習 25-30 個單字，大約 30 天即可完成全面複習。</li>
+              <li><strong>動詞活用：</strong> 請重點關注「動詞分類（一類/二類/三類）」，這對後面學習 ます 形、て 形與否定形極為重要。</li>
+              <li><strong>片假名專攻：</strong> 片假名外來語多為英文對應詞，大聲朗讀發音即可快速連結記憶。</li>
             </ul>
           </div>
         )}
