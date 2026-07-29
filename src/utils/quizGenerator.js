@@ -85,15 +85,21 @@ export function generateQuiz(config = {}) {
     } else if (qType === 'type2') {
       // Type 2: Sentence with missing Kanji -> Kana
       let sentence = '';
+      let chineseHint = target.meaning;
+
       if (target.note && target.note !== '-' && !target.note.includes('外來語') && !target.note.includes('反義詞')) {
-        const rawNote = target.note.split('（')[0];
-        if (rawNote.includes(target.kanji)) {
-          sentence = rawNote.replace(target.kanji, '【 ___ 】');
+        const parts = target.note.split('（');
+        const rawSentence = parts[0].trim();
+        const noteHint = parts[1] ? parts[1].replace('）', '') : '';
+        
+        if (rawSentence.includes(target.kanji)) {
+          const replacedSentence = rawSentence.replace(target.kanji, '【 ___ 】');
+          sentence = `${replacedSentence} (${noteHint || chineseHint})`;
         }
       }
 
       if (!sentence) {
-        sentence = `【 ___ 】の勉強（${target.meaning}）`;
+        sentence = `【 ___ 】 (${chineseHint})`;
       }
 
       const correctAnswer = target.kana;
@@ -105,8 +111,8 @@ export function generateQuiz(config = {}) {
         type: 'type2',
         typeLabel: '2. 填空選音 (Sentence → Kana)',
         questionText: sentence,
-        promptTitle: `請選擇【 ___ 】中「${target.kanji}」的正確平假名讀音：`,
-        audioText: target.kanji,
+        promptTitle: '請根據句意與中文提示，選擇【 ___ 】填空處的正確讀音：',
+        audioText: target.kanji || target.kana,
         correctAnswer: correctAnswer,
         options: options,
         targetItem: target,
