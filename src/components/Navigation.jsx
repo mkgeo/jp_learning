@@ -1,5 +1,5 @@
 import React from 'react';
-import { PenTool, BookOpenCheck, Library, GraduationCap } from 'lucide-react';
+import { PenTool, BookOpenCheck, Library, GraduationCap, Trophy } from 'lucide-react';
 
 export default function Navigation({ activeTab, setActiveTab }) {
   return (
@@ -26,6 +26,14 @@ export default function Navigation({ activeTab, setActiveTab }) {
       >
         <GraduationCap size={18} />
         <span>N5 Vocabulary Table (220+)</span>
+      </button>
+
+      <button 
+        className={`nav-button ${activeTab === 'quiz' ? 'active' : ''}`}
+        onClick={() => setActiveTab('quiz')}
+      >
+        <Trophy size={18} />
+        <span>Vocabulary Quiz (MC Test)</span>
       </button>
 
       <button 

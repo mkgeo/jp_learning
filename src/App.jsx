@@ -5,6 +5,7 @@ import Part1_TextInput from './components/Part1_TextInput';
 import Part2_Reader from './components/Part2_Reader';
 import Part2_StorageList from './components/Part2_StorageList';
 import Part3_VocabularyTable from './components/Part3_VocabularyTable';
+import Part4_VocabularyQuiz from './components/Part4_VocabularyQuiz';
 import { 
   getStoredItems, 
   saveStoredItems, 
@@ -135,6 +136,12 @@ export default function App() {
 
         {activeTab === 'vocab' && (
           <Part3_VocabularyTable 
+            onOpenReaderWithText={handleOpenVocabInReader}
+          />
+        )}
+
+        {activeTab === 'quiz' && (
+          <Part4_VocabularyQuiz 
             onOpenReaderWithText={handleOpenVocabInReader}
           />
         )}
