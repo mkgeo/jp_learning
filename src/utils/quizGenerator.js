@@ -68,7 +68,7 @@ export function generateQuiz(config = {}) {
     // Determine question type based on filter
     let qType = typeFilter;
     if (qType === 'all') {
-      const types = ['type1', 'type2', 'type3', 'type4', 'type5'];
+      const types = ['type1', 'type2', 'type3', 'type4'];
       qType = types[Math.floor(Math.random() * types.length)];
     }
 
@@ -147,34 +147,16 @@ export function generateQuiz(config = {}) {
         explanation: `${target.kanji}【${target.kana}】: ${target.meaning}`
       });
 
-    } else if (qType === 'type4') {
-      // Type 4: Kanji -> Chinese Meaning
-      const correctAnswer = target.meaning;
-      const distractors = getDistractors(N5_VOCABULARY_DATA, correctAnswer, item => item.meaning, 3);
-      const options = shuffleArray([correctAnswer, ...distractors]);
-
-      questions.push({
-        id: `q-${index}-${Date.now()}`,
-        type: 'type4',
-        typeLabel: '4. 漢字選義 (Kanji → Chinese Meaning)',
-        questionText: target.kanji,
-        audioText: primaryKana,
-        correctAnswer: correctAnswer,
-        options: options,
-        targetItem: target,
-        explanation: `${target.kanji}【${target.kana}】: ${target.meaning} (${target.note})`
-      });
-
     } else {
-      // Type 5: Kana -> Kanji
+      // Type 4: Kana -> Kanji
       const correctAnswer = target.kanji;
       const distractors = getDistractors(N5_VOCABULARY_DATA, correctAnswer, item => item.kanji, 3);
       const options = shuffleArray([correctAnswer, ...distractors]);
 
       questions.push({
         id: `q-${index}-${Date.now()}`,
-        type: 'type5',
-        typeLabel: '5. 假名選字 (Kana → Kanji)',
+        type: 'type4',
+        typeLabel: '4. 假名選字 (Kana → Kanji)',
         questionText: target.kana,
         audioText: primaryKana,
         correctAnswer: correctAnswer,
