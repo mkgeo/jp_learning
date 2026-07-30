@@ -143,10 +143,12 @@ export default function Part4_VocabularyQuiz({ onOpenReaderWithText }) {
               </label>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem' }}>
                 {[
-                  { id: 'all', label: '🎯 3種題型混合', desc: '漢字看音 + 句子填空 + 聽力選字' },
+                  { id: 'all', label: '🎯 5種題型混合', desc: '漢字看音 + 句子填空 + 聽力 + 看義 + 假名' },
                   { id: 'type1', label: '📖 1. 漢字看音', desc: '看漢字選擇正確平假名讀音' },
                   { id: 'type2', label: '✍️ 2. 句子填空', desc: '閱讀句子選擇缺字讀音' },
-                  { id: 'type3', label: '🎧 3. 聽力選字', desc: '聽語音發音選擇正確漢字' }
+                  { id: 'type3', label: '🎧 3. 聽音選字', desc: '聽語音發音選擇正確漢字' },
+                  { id: 'type4', label: '🈁 4. 漢字選義', desc: '看漢字選擇正確中文釋義' },
+                  { id: 'type5', label: '🔤 5. 假名選字', desc: '看平假名讀音選擇正確漢字' }
                 ].map(item => (
                   <button
                     key={item.id}
@@ -300,6 +302,30 @@ export default function Part4_VocabularyQuiz({ onOpenReaderWithText }) {
                   <Volume2 size={22} />
                   <span>🔊 再次播放語音 (Replay Audio)</span>
                 </button>
+              </div>
+            )}
+
+            {/* TYPE 4: Kanji -> Chinese Meaning */}
+            {currentQ.type === 'type4' && (
+              <div>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
+                  請選擇下面日文漢字的正確中文釋義：
+                </p>
+                <div style={{ fontSize: '3rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '0.05em' }}>
+                  {currentQ.questionText}
+                </div>
+              </div>
+            )}
+
+            {/* TYPE 5: Kana -> Kanji */}
+            {currentQ.type === 'type5' && (
+              <div>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
+                  請選擇下面假名讀音對應的正確日文漢字：
+                </p>
+                <div style={{ fontSize: '3rem', fontWeight: 800, color: 'var(--accent-pink)', letterSpacing: '0.05em' }}>
+                  {currentQ.questionText}
+                </div>
               </div>
             )}
           </div>

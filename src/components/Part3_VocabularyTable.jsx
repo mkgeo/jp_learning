@@ -22,16 +22,16 @@ export default function Part3_VocabularyTable({ onOpenReaderWithText }) {
     return matchesCategory && matchesSearch;
   });
 
-  // Play audio speech using Web Speech API
+  // Play audio speech using Web Speech API with primary Kana (100% accurate pronunciation)
   const handleSpeak = (item) => {
-    const textToSpeak = item.kanji || item.kana;
-    tts.speak(textToSpeak, 1.0);
+    const primaryKana = item.kana ? item.kana.split('/')[0].trim() : item.kanji;
+    tts.speak(primaryKana, 1.0);
   };
 
   // Process word or example in Reader
-  const handleProcessInReader = (text, title) => {
+  const handleProcessInReader = (text, title, itemObj) => {
     if (onOpenReaderWithText) {
-      onOpenReaderWithText(text, title);
+      onOpenReaderWithText(text, title, itemObj);
     }
   };
 
@@ -270,10 +270,19 @@ export default function Part3_VocabularyTable({ onOpenReaderWithText }) {
                         style={{ padding: '0.35rem 0.5rem' }}
                         title="在 Reader 中開啟研讀"
                         onClick={() => {
-                          const sentenceToProcess = item.note.includes('（') 
-                            ? item.note.split('（')[0] 
-                            : item.kanji;
-                          handleProcessInReader(sentenceToProcess, `${item.kanji} (${item.meaning})`);
+                          const primaryKana = item.kana ? item.kana.split('/')[0].trim() : '';
+                          let textToProcess = item.kanji;
+                          if (item.note && item.note.includes('（')) {
+                            const rawNote = item.note.split('（')[0].trim();
+                            if (rawNote.includes(item.kanji) && primaryKana) {
+                              textToProcess = rawNote.replace(item.kanji, `${item.kanji}[${primaryKana}]`);
+                            } else {
+                              textToProcess = rawNote;
+                            }
+                          } else if (item.kanji && primaryKana && item.kanji !== primaryKana) {
+                            textToProcess = `${item.kanji}[${primaryKana}]`;
+                          }
+                          handleProcessInReader(textToProcess, `${item.kanji} (${item.meaning})`, item);
                         }}
                       >
                         <ArrowRight size={16} color="var(--accent-blue)" />

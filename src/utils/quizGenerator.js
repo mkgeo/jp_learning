@@ -1,9 +1,11 @@
 /**
  * Dynamic JLPT N5 Quiz Generator
- * Generates randomized 4-choice Multiple Choice questions across 3 types:
+ * Generates randomized 4-choice Multiple Choice questions across 5 types:
  * Type 1: Kanji -> Kana (Readings)
  * Type 2: Sentence with missing Kanji -> Kana
  * Type 3: Audio Listening -> Kanji
+ * Type 4: Kanji -> Chinese Meaning
+ * Type 5: Kana -> Kanji
  */
 
 import { N5_VOCABULARY_DATA } from '../data/n5VocabularyData';
@@ -18,6 +20,12 @@ function shuffleArray(array) {
   return arr;
 }
 
+// Get primary Kana reading (e.g. "うち / いえ" -> "うち")
+function getPrimaryKana(kanaStr) {
+  if (!kanaStr) return '';
+  return kanaStr.split('/')[0].trim();
+}
+
 // Generate distractor options excluding target
 function getDistractors(pool, targetKey, keyExtractor, count = 3) {
   const filtered = pool.filter(item => keyExtractor(item) !== targetKey);
@@ -27,7 +35,7 @@ function getDistractors(pool, targetKey, keyExtractor, count = 3) {
 
   for (const item of shuffled) {
     const val = keyExtractor(item);
-    if (!set.has(val) && val !== targetKey && val.trim()) {
+    if (val && !set.has(val) && val !== targetKey && val.trim()) {
       set.add(val);
       distractors.push(val);
       if (distractors.length === count) break;
@@ -39,7 +47,7 @@ function getDistractors(pool, targetKey, keyExtractor, count = 3) {
 
 /**
  * Generate Quiz Questions
- * @param {Object} config - { typeFilter: 'all'|'type1'|'type2'|'type3', questionCount: 10, categoryId: 0 }
+ * @param {Object} config - { typeFilter: 'all'|'type1'|'type2'|'type3'|'type4'|'type5', questionCount: 10, categoryId: 0 }
  */
 export function generateQuiz(config = {}) {
   const { typeFilter = 'all', questionCount = 10, categoryId = 0 } = config;
@@ -60,9 +68,11 @@ export function generateQuiz(config = {}) {
     // Determine question type based on filter
     let qType = typeFilter;
     if (qType === 'all') {
-      const types = ['type1', 'type2', 'type3'];
+      const types = ['type1', 'type2', 'type3', 'type4', 'type5'];
       qType = types[Math.floor(Math.random() * types.length)];
     }
+
+    const primaryKana = getPrimaryKana(target.kana);
 
     if (qType === 'type1') {
       // Type 1: Kanji -> Kana Reading
@@ -75,7 +85,7 @@ export function generateQuiz(config = {}) {
         type: 'type1',
         typeLabel: '1. 漢字看音 (Kanji → Kana)',
         questionText: target.kanji,
-        audioText: target.kanji,
+        audioText: primaryKana,
         correctAnswer: correctAnswer,
         options: options,
         targetItem: target,
@@ -112,14 +122,14 @@ export function generateQuiz(config = {}) {
         typeLabel: '2. 填空選音 (Sentence → Kana)',
         questionText: sentence,
         promptTitle: '請根據句意與中文提示，選擇【 ___ 】填空處的正確讀音：',
-        audioText: target.kanji || target.kana,
+        audioText: primaryKana,
         correctAnswer: correctAnswer,
         options: options,
         targetItem: target,
         explanation: `${target.kanji}【${target.kana}】: ${target.meaning} — ${target.note}`
       });
 
-    } else {
+    } else if (qType === 'type3') {
       // Type 3: Audio Listening -> Kanji
       const correctAnswer = target.kanji;
       const distractors = getDistractors(N5_VOCABULARY_DATA, correctAnswer, item => item.kanji, 3);
@@ -130,11 +140,47 @@ export function generateQuiz(config = {}) {
         type: 'type3',
         typeLabel: '3. 聽音選字 (Audio → Kanji)',
         questionText: '🔊 請點擊播放按鈕聽日語發音，選擇正確的漢字：',
-        audioText: target.kanji || target.kana,
+        audioText: primaryKana,
         correctAnswer: correctAnswer,
         options: options,
         targetItem: target,
         explanation: `${target.kanji}【${target.kana}】: ${target.meaning}`
+      });
+
+    } else if (qType === 'type4') {
+      // Type 4: Kanji -> Chinese Meaning
+      const correctAnswer = target.meaning;
+      const distractors = getDistractors(N5_VOCABULARY_DATA, correctAnswer, item => item.meaning, 3);
+      const options = shuffleArray([correctAnswer, ...distractors]);
+
+      questions.push({
+        id: `q-${index}-${Date.now()}`,
+        type: 'type4',
+        typeLabel: '4. 漢字選義 (Kanji → Chinese Meaning)',
+        questionText: target.kanji,
+        audioText: primaryKana,
+        correctAnswer: correctAnswer,
+        options: options,
+        targetItem: target,
+        explanation: `${target.kanji}【${target.kana}】: ${target.meaning} (${target.note})`
+      });
+
+    } else {
+      // Type 5: Kana -> Kanji
+      const correctAnswer = target.kanji;
+      const distractors = getDistractors(N5_VOCABULARY_DATA, correctAnswer, item => item.kanji, 3);
+      const options = shuffleArray([correctAnswer, ...distractors]);
+
+      questions.push({
+        id: `q-${index}-${Date.now()}`,
+        type: 'type5',
+        typeLabel: '5. 假名選字 (Kana → Kanji)',
+        questionText: target.kana,
+        audioText: primaryKana,
+        correctAnswer: correctAnswer,
+        options: options,
+        targetItem: target,
+        explanation: `${target.kanji}【${target.kana}】: ${target.meaning} (${target.note})`
       });
     }
   });

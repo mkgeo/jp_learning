@@ -53,15 +53,27 @@ export default function App() {
   };
 
   // Handle direct text open from Vocabulary Table into Reader
-  const handleOpenVocabInReader = (text, title) => {
-    const paragraphs = parseJapaneseParagraphsSync(text);
+  const handleOpenVocabInReader = (text, title, itemObj) => {
+    let formattedText = text;
+    if (itemObj && itemObj.kanji && itemObj.kana && itemObj.kanji !== itemObj.kana) {
+      const primaryKana = itemObj.kana.split('/')[0].trim();
+      if (!text.includes('[')) {
+        if (text === itemObj.kanji) {
+          formattedText = `${itemObj.kanji}[${primaryKana}]`;
+        } else if (text.includes(itemObj.kanji)) {
+          formattedText = text.replace(itemObj.kanji, `${itemObj.kanji}[${primaryKana}]`);
+        }
+      }
+    }
+
+    const paragraphs = parseJapaneseParagraphsSync(formattedText);
     const vocabItem = {
       id: `vocab-${Date.now()}`,
-      title: title || text,
-      japaneseText: text,
+      title: title || (itemObj ? `${itemObj.kanji} (${itemObj.meaning})` : text),
+      japaneseText: formattedText,
       paragraphs: paragraphs,
-      englishTranslation: 'N5 Core Vocabulary Example',
-      category: 'N5 Vocabulary',
+      englishTranslation: itemObj ? itemObj.meaning : 'N5 Core Vocabulary Example',
+      category: itemObj ? itemObj.categoryName : 'N5 Vocabulary',
       tags: ['N5', 'Vocabulary']
     };
     setActiveItem(vocabItem);
